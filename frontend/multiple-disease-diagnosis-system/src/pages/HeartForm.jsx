@@ -30,7 +30,7 @@ const HeartForm = () => {
     // Convert dropdown "sex" value (male/female) to 1/0
     const sexValue = formData.sex === "male" ? 1 : 0;
 
-    const response = await fetch("http://127.0.0.1:5000/predict_heart", {
+    const response = await fetch("http://127.0.0.1:5000/predict_heart","https://multi-disease-diagnosis-system-using.onrender.com" ,{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
