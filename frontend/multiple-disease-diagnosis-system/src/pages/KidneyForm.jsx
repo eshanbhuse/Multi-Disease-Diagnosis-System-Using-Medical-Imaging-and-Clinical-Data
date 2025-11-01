@@ -28,7 +28,6 @@ function KidneyForm() {
     appet: "",
     pe: "",
     ane: "",
-    classification: "",
   });
 
   const [result, setResult] = useState("");
@@ -171,14 +170,7 @@ function KidneyForm() {
             <option value="">ANE</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
-          </select>
-
-          {/* CLASSIFICATION */}
-          <select name="classification" value={formData.classification} onChange={handleChange} required>
-            <option value="">CLASSIFICATION</option>
-            <option value="ckd">CKD</option>
-            <option value="notckd">Not CKD</option>
-          </select>
+          </select>          
 
           {/* Submit Button */}
           <button type="submit" className="predict-btn">

@@ -56,11 +56,6 @@ def predict_diabetes():
             data["DiabetesPedigreeFunction"], data["Age"]
         ]
 
-        # Replace any 0s in key health features (same logic as training)
-        for i in [1, 2, 3, 4, 5]:
-            if features[i] == 0:
-                features[i] = 1e-5  # or replace with training mean if you saved it
-
         features = np.array(features).reshape(1, -1)
         prediction = diabetes_model.predict(features)[0]
         result = "The person has Diabetes" if prediction == 1 else "The person does not have Diabetes"

@@ -10,7 +10,7 @@ const DiabetesForm = () => {
     Insulin: "",
     BMI: "",
     DiabetesPedigreeFunction: "",
-    AGE: "",
+    Age: "",
   });
 
   const [result, setResult] = useState("");
@@ -21,7 +21,7 @@ const DiabetesForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://127.0.0.1:5000/predict_diabetes","https://multi-disease-diagnosis-system-using.onrender.com", {
+    const response = await fetch("http://127.0.0.1:5000/predict_diabetes",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(

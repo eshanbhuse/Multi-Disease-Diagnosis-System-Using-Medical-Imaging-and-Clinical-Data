@@ -21,10 +21,10 @@ Each disease prediction model is trained on publicly available medical datasets:
 
 | Disease | Model Used | Accuracy | File |
 |----------|-------------|----------|------|
-| Diabetes | Logistic Regression | ~97% | `diabetes_model.sav` |
-| Heart Disease | Random Forest | ~94% | `heart_model.sav` |
-| Kidney Disease | Support Vector Machine (SVM) | ~96% | `kidney.pkl` | 
-| Parkinson's Disease  | Logistic Regression  | ~96%  | `parkinsons_model.sav` |
+| Diabetes | Logistic Regression | ~78.4% | `diabetes_model.sav` |
+| Heart Disease | Random Forest | ~81.9% | `heart_model.sav` |
+| Kidney Disease | Support Vector Machine (SVM) | ~97.5% | `kidney.pkl` | 
+| Parkinson's Disease  | Logistic Regression  | ~87.1%  | `parkinsons_model.sav` |
 
 The models are saved as `.sav` files and loaded by Flask for fast, real-time inference.
 
