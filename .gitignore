@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-
+frontend/multiple-disease-diagnosis-system/node_modules/
 # testing
 /coverage
 
