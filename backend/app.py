@@ -9,7 +9,7 @@ import pickle
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-# Initialize Flask app
+
 app = Flask(__name__)
 CORS(app)
 
