@@ -70,6 +70,8 @@ def predict_diabetes():
 def predict_parkinson():
     try:
         data = request.json
+
+        # Extract feature values in the correct order
         features = np.array([
             data["MDVP_Fo_Hz"], data["MDVP_Fhi_Hz"], data["MDVP_Flo_Hz"],
             data["MDVP_Jitter_percent"], data["MDVP_Jitter_Abs"], data["MDVP_RAP"],
@@ -80,31 +82,44 @@ def predict_parkinson():
             data["D2"], data["PPE"]
         ]).reshape(1, -1)
 
+        # Make prediction using the loaded model
         prediction = parkinson_model.predict(features)[0]
+
+        # Map prediction to readable output
         result = "The person has Parkinson’s Disease" if prediction == 1 else "The person does not have Parkinson’s Disease"
-        return jsonify({"prediction": int(prediction), "result": result})
+
+        # Return JSON response (status is your result key)
+        return jsonify({
+            "prediction": int(prediction),
+            "status": result
+        })
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
 
 # ---------------- KIDNEY DISEASE PREDICTION ----------------
-@app.route("/predict_kidney", methods=["POST"])
+@app.route('/predict_kidney', methods=['POST'])
 def predict_kidney():
     try:
-        data = request.json
-        features = np.array([
-            data["id"], data["age"], data["bp"], data["sg"], data["al"],
-            data["su"], data["rbc"], data["pc"], data["pcc"], data["ba"],
-            data["bgr"], data["bu"], data["sc"], data["sod"], data["pot"],
-            data["hemo"], data["pcv"], data["wc"], data["rc"], data["htn"],
-            data["dm"], data["cad"], data["appet"], data["pe"], data["ane"]
-        ]).reshape(1, -1)
+        # Get input data as JSON
+        data = request.get_json()
 
-        prediction = kidney_model.predict(features)[0]
-        result = "The person has Chronic Kidney Disease" if prediction == 1 else "The person does not have Chronic Kidney Disease"
-        return jsonify({"prediction": int(prediction), "result": result})
+        # Convert input values into a list for model prediction
+        input_data = [list(data.values())]
+
+        # Predict using the trained model
+        prediction = model.predict(input_data)[0]
+
+        # Map prediction result
+        result = "The person has Chronic Kidney Disease" if prediction == 'ckd' else "The person does not have Chronic Kidney Disease"
+
+        # Return the response as JSON
+        return jsonify({'prediction': result})
+    
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({'error': str(e)}), 400
+
 
 
 # ---------------- RUN APP ----------------
