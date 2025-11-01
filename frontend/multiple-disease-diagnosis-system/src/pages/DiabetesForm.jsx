@@ -10,7 +10,7 @@ const DiabetesForm = () => {
     Insulin: "",
     BMI: "",
     DiabetesPedigreeFunction: "",
-    Age: "",
+    AGE: "",
   });
 
   const [result, setResult] = useState("");
