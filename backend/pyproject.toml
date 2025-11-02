@@ -1,2 +1,9 @@
 [project]
-requires-python = "3.12.10"
+name = "multi-disease-diagnosis-system"
+version = "1.0.0"
+description = "Flask backend for multi-disease diagnosis"
+requires-python = ">=3.12,<3.13"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
