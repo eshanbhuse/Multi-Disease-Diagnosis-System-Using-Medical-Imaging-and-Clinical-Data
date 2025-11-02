@@ -65,13 +65,12 @@ def predict_diabetes():
 
 
 
-# ---------------- PARKINSON’S DISEASE PREDICTION ----------------
+# ---------------- PARKINSON’S DISEASE PREDICTION ----------
 @app.route("/predict_parkinson", methods=["POST"])
 def predict_parkinson():
     try:
         data = request.json
 
-        # Extract feature values in the correct order
         features = np.array([
             data["MDVP_Fo_Hz"], data["MDVP_Fhi_Hz"], data["MDVP_Flo_Hz"],
             data["MDVP_Jitter_percent"], data["MDVP_Jitter_Abs"], data["MDVP_RAP"],
@@ -82,13 +81,10 @@ def predict_parkinson():
             data["D2"], data["PPE"]
         ]).reshape(1, -1)
 
-        # Make prediction using the loaded model
         prediction = parkinson_model.predict(features)[0]
 
-        # Map prediction to readable output
         result = "The person has Parkinson’s Disease" if prediction == 1 else "The person does not have Parkinson’s Disease"
 
-        # Return JSON response (status is your result key)
         return jsonify({
             "prediction": int(prediction),
             "status": result
@@ -99,29 +95,53 @@ def predict_parkinson():
 
 
 # ---------------- KIDNEY DISEASE PREDICTION ----------------
-@app.route('/predict_kidney', methods=['POST'])
+@app.route("/predict_kidney", methods=["POST"])
 def predict_kidney():
     try:
-        # Get input data as JSON
         data = request.get_json()
 
-        # Convert input values into a list for model prediction
-        input_data = [list(data.values())]
+        # Ensure all features are converted to float
+        features = np.array([
+            float(data.get("age", 0)),
+            float(data.get("bp", 0)),
+            float(data.get("sg", 0)),
+            float(data.get("al", 0)),
+            float(data.get("su", 0)),
+            float(data.get("rbc", 0)),
+            float(data.get("pc", 0)),
+            float(data.get("pcc", 0)),
+            float(data.get("ba", 0)),
+            float(data.get("bgr", 0)),
+            float(data.get("bu", 0)),
+            float(data.get("sc", 0)),
+            float(data.get("sod", 0)),
+            float(data.get("pot", 0)),
+            float(data.get("hemo", 0)),
+            float(data.get("pcv", 0)),
+            float(data.get("wc", 0)),
+            float(data.get("rc", 0)),
+            float(data.get("htn", 0)),
+            float(data.get("dm", 0)),
+            float(data.get("cad", 0)),
+            float(data.get("appet", 0)),
+            float(data.get("pe", 0)),
+            float(data.get("ane", 0))
+        ]).reshape(1, -1)
 
-        # Predict using the trained model
-        prediction = model.predict(input_data)[0]
+        # Predict
+        prediction = kidney_model.predict(features)[0]
 
-        # Map prediction result
-        result = "The person has Chronic Kidney Disease" if prediction == 'ckd' else "The person does not have Chronic Kidney Disease"
+        # Build response
+        result = "The person has Chronic Kidney Disease" if prediction == 1 else "The person does not have Chronic Kidney Disease"
 
-        # Return the response as JSON
-        return jsonify({'prediction': result})
-    
+        return jsonify({
+            "prediction": int(prediction),
+            "status": result
+        })
+
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({"error": str(e)}), 400
 
 
-
-# ---------------- RUN APP ----------------
 if __name__ == "__main__":
     app.run(debug=True)

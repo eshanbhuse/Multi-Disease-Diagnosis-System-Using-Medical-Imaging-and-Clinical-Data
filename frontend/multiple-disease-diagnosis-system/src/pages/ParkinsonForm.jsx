@@ -36,7 +36,7 @@ const ParkinsonForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://127.0.0.1:5000/predict_parkinson","https://multi-disease-diagnosis-system-using.onrender.com", {
+    const response = await fetch("http://127.0.0.1:5000/predict_parkinson", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(
@@ -45,7 +45,7 @@ const ParkinsonForm = () => {
     });
 
     const data = await response.json();
-    setResult(data.result || data.error);
+    setResult(data.status || data.error);
   };
 
   return (

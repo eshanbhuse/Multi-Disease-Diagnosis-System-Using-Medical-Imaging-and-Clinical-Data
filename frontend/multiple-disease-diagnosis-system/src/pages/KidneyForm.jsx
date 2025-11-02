@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import "../index.css"; // make sure this includes your CSS styles
+import "../index.css";
 
 function KidneyForm() {
   const [formData, setFormData] = useState({
-    id: "",
     age: "",
     bp: "",
     sg: "",
@@ -43,14 +42,43 @@ function KidneyForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://127.0.0.1:5000/predict_kidney","https://multi-disease-diagnosis-system-using.onrender.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    // Label encoding (must match your model)
+    const mapping = {
+      normal: 0,
+      abnormal: 1,
+      present: 0,
+      notpresent: 1,
+      yes: 0,
+      no: 1,
+      good: 0,
+      poor: 1,
+    };
 
-    const data = await response.json();
-    setResult(data.prediction);
+    // Convert formData to numeric version
+    const numericData = {};
+    for (const key in formData) {
+      const value = formData[key];
+      if (mapping.hasOwnProperty(value.toLowerCase())) {
+        numericData[key] = mapping[value.toLowerCase()];
+      } else if (value === "") {
+        numericData[key] = 0;
+      } else {
+        numericData[key] = parseFloat(value);
+      }
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/predict_kidney", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(numericData),
+      });
+
+      const data = await response.json();
+      setResult(data.prediction || "Error occurred");
+    } catch (error) {
+      setResult("Error connecting to server");
+    }
   };
 
   return (
@@ -60,119 +88,84 @@ function KidneyForm() {
         <p>Enter your health details to check your risk level.</p>
 
         <form className="form-grid" onSubmit={handleSubmit}>
-          {/* AGE */}
-          <input type="number" name="age" placeholder="AGE" value={formData.age} onChange={handleChange} required />
+          {/* Numeric Inputs */}
+          <input type="number" name="age" placeholder="AGE" value={formData.age} onChange={handleChange} />
+          <input type="number" name="bp" placeholder="BP" value={formData.bp} onChange={handleChange} />
+          <input type="number" step="any" name="sg" placeholder="SG" value={formData.sg} onChange={handleChange} />
+          <input type="number" step="any" name="al" placeholder="AL" value={formData.al} onChange={handleChange} />
+          <input type="number" step="any" name="su" placeholder="SU" value={formData.su} onChange={handleChange} />
 
-          {/* BP */}
-          <input type="number" name="bp" placeholder="BP" value={formData.bp} onChange={handleChange} required />
-
-          {/* SG */}
-          <input type="number" step="any" name="sg" placeholder="SG" value={formData.sg} onChange={handleChange} required />
-
-          {/* AL */}
-          <input type="number" step="any" name="al" placeholder="AL" value={formData.al} onChange={handleChange} required />
-
-          {/* SU */}
-          <input type="number" step="any" name="su" placeholder="SU" value={formData.su} onChange={handleChange} required />
-
-          {/* RBC */}
-          <select name="rbc" value={formData.rbc} onChange={handleChange} required>
+          {/* Select Inputs */}
+          <select name="rbc" value={formData.rbc} onChange={handleChange}>
             <option value="">RBC</option>
             <option value="normal">Normal</option>
             <option value="abnormal">Abnormal</option>
           </select>
 
-          {/* PC */}
-          <select name="pc" value={formData.pc} onChange={handleChange} required>
+          <select name="pc" value={formData.pc} onChange={handleChange}>
             <option value="">PC</option>
             <option value="normal">Normal</option>
             <option value="abnormal">Abnormal</option>
           </select>
 
-          {/* PCC */}
-          <select name="pcc" value={formData.pcc} onChange={handleChange} required>
+          <select name="pcc" value={formData.pcc} onChange={handleChange}>
             <option value="">PCC</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="present">Present</option>
+            <option value="notpresent">Not Present</option>
           </select>
 
-          {/* BA */}
-          <select name="ba" value={formData.ba} onChange={handleChange} required>
+          <select name="ba" value={formData.ba} onChange={handleChange}>
             <option value="">BA</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="present">Present</option>
+            <option value="notpresent">Not Present</option>
           </select>
 
-          {/* BGR */}
-          <input type="number" step="any" name="bgr" placeholder="BGR" value={formData.bgr} onChange={handleChange} required />
+          <input type="number" step="any" name="bgr" placeholder="BGR" value={formData.bgr} onChange={handleChange} />
+          <input type="number" step="any" name="bu" placeholder="BU" value={formData.bu} onChange={handleChange} />
+          <input type="number" step="any" name="sc" placeholder="SC" value={formData.sc} onChange={handleChange} />
+          <input type="number" step="any" name="sod" placeholder="SOD" value={formData.sod} onChange={handleChange} />
+          <input type="number" step="any" name="pot" placeholder="POT" value={formData.pot} onChange={handleChange} />
+          <input type="number" step="any" name="hemo" placeholder="HEMO" value={formData.hemo} onChange={handleChange} />
+          <input type="number" step="any" name="pcv" placeholder="PCV" value={formData.pcv} onChange={handleChange} />
+          <input type="number" step="any" name="wc" placeholder="WC" value={formData.wc} onChange={handleChange} />
+          <input type="number" step="any" name="rc" placeholder="RC" value={formData.rc} onChange={handleChange} />
 
-          {/* BU */}
-          <input type="number" step="any" name="bu" placeholder="BU" value={formData.bu} onChange={handleChange} required />
-
-          {/* SC */}
-          <input type="number" step="any" name="sc" placeholder="SC" value={formData.sc} onChange={handleChange} required />
-
-          {/* SOD */}
-          <input type="number" step="any" name="sod" placeholder="SOD" value={formData.sod} onChange={handleChange} required />
-
-          {/* POT */}
-          <input type="number" step="any" name="pot" placeholder="POT" value={formData.pot} onChange={handleChange} required />
-
-          {/* HEMO */}
-          <input type="number" step="any" name="hemo" placeholder="HEMO" value={formData.hemo} onChange={handleChange} required />
-
-          {/* PCV */}
-          <input type="number" step="any" name="pcv" placeholder="PCV" value={formData.pcv} onChange={handleChange} required />
-
-          {/* WC */}
-          <input type="number" step="any" name="wc" placeholder="WC" value={formData.wc} onChange={handleChange} required />
-
-          {/* RC */}
-          <input type="number" step="any" name="rc" placeholder="RC" value={formData.rc} onChange={handleChange} required />
-
-          {/* HTN */}
-          <select name="htn" value={formData.htn} onChange={handleChange} required>
+          <select name="htn" value={formData.htn} onChange={handleChange}>
             <option value="">HTN</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
 
-          {/* DM */}
-          <select name="dm" value={formData.dm} onChange={handleChange} required>
+          <select name="dm" value={formData.dm} onChange={handleChange}>
             <option value="">DM</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
 
-          {/* CAD */}
-          <select name="cad" value={formData.cad} onChange={handleChange} required>
+          <select name="cad" value={formData.cad} onChange={handleChange}>
             <option value="">CAD</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
 
-          {/* APPET */}
-          <select name="appet" value={formData.appet} onChange={handleChange} required>
+          <select name="appet" value={formData.appet} onChange={handleChange}>
             <option value="">APPET</option>
             <option value="good">Good</option>
             <option value="poor">Poor</option>
           </select>
 
-          {/* PE */}
-          <select name="pe" value={formData.pe} onChange={handleChange} required>
+          <select name="pe" value={formData.pe} onChange={handleChange}>
             <option value="">PE</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
 
-          {/* ANE */}
-          <select name="ane" value={formData.ane} onChange={handleChange} required>
+          <select name="ane" value={formData.ane} onChange={handleChange}>
             <option value="">ANE</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
-          </select>          
+          </select>
 
-          {/* Submit Button */}
           <button type="submit" className="predict-btn">
             Predict
           </button>
@@ -180,8 +173,7 @@ function KidneyForm() {
 
         {result && (
           <div className="result-box">
-            <h3>Prediction Result:</h3>
-            <p>{result}</p>
+            <h3>{result}</h3>
           </div>
         )}
       </div>
