@@ -1,4 +1,4 @@
-
+import pandas as pd
 import warnings
 from sklearn.exceptions import InconsistentVersionWarning
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
@@ -22,7 +22,8 @@ try:
     with open("saved_models/parkinsons_model.sav", "rb") as f:
         parkinson_model = pickle.load(f)
     with open("saved_models/kidney.pkl", "rb") as f:
-        kidney_model = pickle.load(f)
+        kidney_disease_model  = pickle.load(f)
+
 except Exception as e:
     print("Error loading models:", e)
 
@@ -95,52 +96,38 @@ def predict_parkinson():
 
 
 # ---------------- KIDNEY DISEASE PREDICTION ----------------
-@app.route("/predict_kidney", methods=["POST"])
+@app.route('/predict_kidney', methods=['POST'])
 def predict_kidney():
     try:
         data = request.get_json()
-
-        # Ensure all features are converted to float
-        features = np.array([
-            float(data.get("age", 0)),
-            float(data.get("bp", 0)),
-            float(data.get("sg", 0)),
-            float(data.get("al", 0)),
-            float(data.get("su", 0)),
-            float(data.get("rbc", 0)),
-            float(data.get("pc", 0)),
-            float(data.get("pcc", 0)),
-            float(data.get("ba", 0)),
-            float(data.get("bgr", 0)),
-            float(data.get("bu", 0)),
-            float(data.get("sc", 0)),
-            float(data.get("sod", 0)),
-            float(data.get("pot", 0)),
-            float(data.get("hemo", 0)),
-            float(data.get("pcv", 0)),
-            float(data.get("wc", 0)),
-            float(data.get("rc", 0)),
-            float(data.get("htn", 0)),
-            float(data.get("dm", 0)),
-            float(data.get("cad", 0)),
-            float(data.get("appet", 0)),
-            float(data.get("pe", 0)),
-            float(data.get("ane", 0))
-        ]).reshape(1, -1)
+        
+        # Features in the exact order your model expects
+        features = [
+            data['age'], data['bp'], data['sg'],
+            data['al'], data['su'], data['rbc'],
+            data['pc'], data['pcc'], data['ba'],
+            data['bgr'], data['bu'], data['sc'],
+            data['sod'], data['pot'], data['hemo'],
+            data['pcv'], data['wc'], data['rc'],
+            data['htn'], data['dm'], data['cad'],
+            data['appet'], data['pe'], data['ane']
+        ]
+        
+        # Convert to numpy array
+        input_data = np.asarray(features, dtype=float).reshape(1, -1)
 
         # Predict
-        prediction = kidney_model.predict(features)[0]
+        prediction = kidney_disease_model.predict(input_data)
 
-        # Build response
-        result = "The person has Chronic Kidney Disease" if prediction == 1 else "The person does not have Chronic Kidney Disease"
+        # Map to readable message
+        result = "The person has Chronic Kidney Disease" if prediction[0] == 1 else "The person does not have Chronic Kidney Disease"
 
-        return jsonify({
-            "prediction": int(prediction),
-            "status": result
-        })
+        return jsonify({'result': result})
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        print("❌ Error during prediction:", str(e))
+        return jsonify({'error': str(e)})
+
 
 
 if __name__ == "__main__":
