@@ -1,5 +1,6 @@
 import pandas as pd
 import warnings
+import os
 from sklearn.exceptions import InconsistentVersionWarning
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 from flask import Flask, request, jsonify
@@ -131,4 +132,5 @@ def predict_kidney():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000)) 
+    app.run(host="0.0.0.0", port=port)

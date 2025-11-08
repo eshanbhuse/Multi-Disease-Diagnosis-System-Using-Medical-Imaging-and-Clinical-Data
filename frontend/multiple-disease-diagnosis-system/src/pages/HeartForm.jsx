@@ -29,7 +29,7 @@ const HeartForm = () => {
 
     const sexValue = formData.sex === "male" ? 1 : 0;
 
-    const response = await fetch("http://127.0.0.1:5000/predict_heart",{
+    const response = await fetch("https://multi-disease-diagnosis-system-1-1.onrender.com/predict_heart",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
