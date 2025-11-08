@@ -2,3 +2,6 @@ numpy==1.26.3
 scikit-learn==1.3.2
 flask
 scipy==1.11.4
+pandas
+flask_cors
+sha256:e50174d8ec90cb50c1b7c956cba45cacabae045e5da4c74414140be2026d14ba
